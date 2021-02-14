@@ -1,0 +1,72 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NavController, IonSlides } from '@ionic/angular';
+import { ApiService } from '../providers/api/api.service';
+import { AuthService } from '../providers/auth/auth.service';
+import { Router } from '@angular/router';
+import { NavigationExtras } from '@angular/router';
+
+@Component({
+  selector: 'app-eventos',
+  templateUrl: './eventos.page.html',
+  styleUrls: ['./eventos.page.scss'],
+})
+export class EventosPage implements OnInit {
+  @ViewChild('slides') slides;
+  currentIndex:Number = 1;
+  slideOpts = {
+    initialSlide: 0,
+    speed: 400
+  };
+  listevent: any;
+  listevnetbp: any
+  generales : any;
+  capitulos : any;
+  constructor(public navCtrl:NavController, private router: Router, public api: ApiService, public auth: AuthService) { 
+    this.api.getDataWithParms('/api/Values',{ Opcion: 8,ncodcol: this.auth.AuthToken.ncodcol, codverif: this.auth.AuthToken.ncodcol,Procedure: "mobileProcedure" })
+    .then(data => { 
+     this.listevent = JSON.parse(data.toString()); 
+     this.listevnetbp = this.listevent;  
+    });
+    this.api.getDataWithParms('/api/Values',{ Opcion: 9,ncodcol: this.auth.AuthToken.ncodcol, codverif: this.auth.AuthToken.ncodcol,Procedure: "mobileProcedure" })
+    .then(data => { 
+     this.capitulos = JSON.parse(data.toString());   
+     console.log(this.capitulos)  
+    });
+    this.api.getDataWithParms('/api/Values',{ Opcion: 10,ncodcol: this.auth.AuthToken.ncodcol, codverif: this.auth.AuthToken.ncodcol,Procedure: "mobileProcedure" })
+    .then(data => { 
+     this.generales = JSON.parse(data.toString());   
+    });
+  }
+
+  ngOnInit() {
+    
+  }
+  slideNumber() {
+    const index = this.slides.getActiveIndex().then(
+      (index)=>{
+        this.currentIndex = index + 1;
+     });
+  }
+  detalle(obj) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        event: JSON.stringify(obj)
+      }
+    };
+    this.router.navigate(['eventdet'], navigationExtras);
+  }
+  filterEvent(obj) {
+    this.listevent = this.listevnetbp.filter(t=>t.vnomcap ===obj.vnomcap);
+  }
+  quitarfiltro(){
+    this.listevent = this.listevnetbp;
+  }
+  doRefresh(event) {
+    this.api.getDataWithParms('/api/Values',{ Opcion: 8,ncodcol: this.auth.AuthToken.ncodcol, codverif: this.auth.AuthToken.ncodcol,Procedure: "mobileProcedure" })
+    .then(data => { 
+     this.listevent = JSON.parse(data.toString());   
+     console.log(this.listevent)  
+     event.target.complete();
+    });  
+  }
+}
