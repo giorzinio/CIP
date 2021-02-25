@@ -31,12 +31,15 @@
         <input #Field5 (keyup)="gotoNextField(Field5,Field6)" [(ngModel)]="cinco" id="Good" type="number" placeholder="-" pattern="\d*" max="1">
       </ion-col>
       <ion-col size=2>
-        <input #Field6 id="Good" [(ngModel)]="seis" type="text" placeholder="-" pattern="\d*" max="1">
+        <input #Field6 id="Good" [(ngModel)]="seis" type="number" placeholder="-" pattern="\d*" max="1">
       </ion-col>
     </ion-row>    
     <ion-row>
-      <ion-col class="ion-text-start">
-        <ion-text *ngIf="!isShown" color="medium">Volver a enviar código en: 15 segundos</ion-text>       
+      <ion-col class="ion-text-start" size="12">
+        <ion-text *ngIf="!isShown" color="medium">Volver a enviar código en: {{timeLeft}} segundos</ion-text>            
+      </ion-col>
+      <ion-col>
+        <ion-text color="dark" *ngIf="timeLeft == 0">Enviando nuevo codigo de acceso...</ion-text>      
       </ion-col>
     </ion-row>
     <ion-row>

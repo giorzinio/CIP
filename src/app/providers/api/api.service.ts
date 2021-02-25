@@ -6,7 +6,7 @@
     providedIn: 'root'
   })
   export class ApiService {
-    public api:string  = 'http://192.168.2.104:8085';
+    public api:string  = 'http://190.117.160.190:8086';
     public loading = false;
     //public api:string  = 'http://siga.unitek.edu.pe:8072';
     constructor(public toastController: ToastController, public http: HttpClient) {      

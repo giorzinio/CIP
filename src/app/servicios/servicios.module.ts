@@ -7,13 +7,14 @@ import { IonicModule } from '@ionic/angular';
 import { ServiciosPageRoutingModule } from './servicios-routing.module';
 
 import { ServiciosPage } from './servicios.page';
-
+import {MatStepperModule} from '@angular/material/stepper';
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ServiciosPageRoutingModule
+    ServiciosPageRoutingModule,
+    MatStepperModule
   ],
   declarations: [ServiciosPage]
 })

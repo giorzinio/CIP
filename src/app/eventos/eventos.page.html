@@ -1,7 +1,13 @@
 <ion-header class="ion-padding">
   <ion-toolbar>    
-    <img src="assets/img/cip_cda.png" />    
-    <ion-slides class="ion-padding-top swiper-container hydrated swiper-container-initialized swiper-container-horizontal swiper-container-ios" mode="md">
+    <img src="assets/img/cip_cda.png" />
+    <ion-item class="ion-no-padding" lines="none" button="true">
+      <ion-button size="small" slot="end" shape="round" fill="clear" (click)="filtro()">
+        <ion-icon slot="start" src="assets/icon/levels.svg"></ion-icon>
+        Filtro
+      </ion-button>       
+    </ion-item>      
+    <!-- <ion-slides class="ion-padding-top swiper-container hydrated swiper-container-initialized swiper-container-horizontal swiper-container-ios" mode="md">
       <ion-slide (click)="quitarfiltro()" class="ion-sile-custom">
         <ion-chip color="danger">
           <ion-label>
@@ -16,14 +22,14 @@
           </ion-label>
         </ion-chip>
       </ion-slide>      
-    </ion-slides>
+    </ion-slides> -->
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>    
+  </ion-refresher>  
    <div *ngIf="listevent">
     <ion-slides  #slides (ionSlideWillChange) ="slideNumber()" pager="true" [options]="slideOpts">
       <ion-slide *ngFor="let gen of generales" (click)="detalle(gen)">

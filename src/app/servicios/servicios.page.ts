@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController } from '@ionic/angular';
+import {MatStepperModule, MatStepper} from '@angular/material/stepper';
 
 @Component({
   selector: 'app-servicios',
@@ -7,6 +8,7 @@ import { NavController } from '@ionic/angular';
   styleUrls: ['./servicios.page.scss'],
 })
 export class ServiciosPage implements OnInit {
+  @ViewChild('stepper') private myStepper: MatStepper;
   tipo = {
     serv: 'edit',
     datos: 'disabled',
@@ -16,9 +18,12 @@ export class ServiciosPage implements OnInit {
   FecIni: any;
   FecFin: any;
   diffmon: any;
+  isLinear = false;
+  comprobante: any = 'b';
   constructor(public navCtrl:NavController) {  
     this.FecIni= new Date('2020-11-04T13:15:30Z').toISOString();
     this.FecFin= new Date('2020-11-04T13:15:30Z').toISOString();
+    this.endDatos();
   }
 
   ngOnInit() {
@@ -43,7 +48,10 @@ export class ServiciosPage implements OnInit {
       }
     ]
   };
-  endServ() {
+  goForward() {
+    this.myStepper.next();
+  }
+  endServ(element) {
     if(this.servicio) {
       this.tipo.serv = 'complete';
       this.tipo.datos = 'edit';

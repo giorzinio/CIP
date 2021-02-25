@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController, IonSlides } from '@ionic/angular';
+import { NavController, IonSlides, ActionSheetController } from '@ionic/angular';
 import { ApiService } from '../providers/api/api.service';
 import { AuthService } from '../providers/auth/auth.service';
 import { Router } from '@angular/router';
@@ -21,7 +21,7 @@ export class EventosPage implements OnInit {
   listevnetbp: any
   generales : any;
   capitulos : any;
-  constructor(public navCtrl:NavController, private router: Router, public api: ApiService, public auth: AuthService) { 
+  constructor(public navCtrl:NavController, private router: Router, public api: ApiService, public auth: AuthService, public actionSheetController: ActionSheetController) { 
     this.api.getDataWithParms('/api/Values',{ Opcion: 8,ncodcol: this.auth.AuthToken.ncodcol, codverif: this.auth.AuthToken.ncodcol,Procedure: "mobileProcedure" })
     .then(data => { 
      this.listevent = JSON.parse(data.toString()); 
@@ -38,6 +38,50 @@ export class EventosPage implements OnInit {
     });
   }
 
+  async filtro() {
+    const filtro = await this.actionSheetController.create({
+      header: 'Capitulos',
+      cssClass: 'my-custom-class',
+      buttons: this.createButtons()
+    });
+    await filtro.present();
+  }
+
+  createButtons() {
+    let buttons = [];
+    let button = {
+      text: 'Todos',
+      icon: 'chevron-forward-outline',
+      role: '',
+      handler: () => {
+        console.log('Favorite clicked');
+      }
+    }
+    buttons.push(button);    
+    for (let index in this.capitulos) {
+      let button = {
+        text: this.capitulos[index].vnomcap,
+        icon: "chevron-forward-outline",
+        handler: () => {
+          this.filterEvent(this.capitulos[index]);
+          console.log('setting icon ' + this.capitulos[index].vnomcap);
+          return true;
+        }
+      }
+      buttons.push(button);
+    }
+    button = {
+      text: 'Cerrar',
+      icon: 'close',
+      role: 'cancel',
+      handler: () => {
+        console.log('Cancel clicked');
+      }    
+    }
+    buttons.push(button);
+    return buttons;
+  }
+  
   ngOnInit() {
     
   }

@@ -3,17 +3,116 @@
     <img src="assets/img/cip_cda.png" />
   </ion-toolbar>
 </ion-header>
-
-<ion-content>
-  <!-- <ion-grid style="background-color: #9c0c0c;">
-    <ion-row>
-      <ion-col class="ion-text-end">
-        <ion-text color="light"><h1><ion-icon size="large" name="document-text"></ion-icon> Selecciona un servicio</h1></ion-text>
-        <hr class="solid">
-      </ion-col>
-    </ion-row>
-  </ion-grid> -->
-  <ion-grid (click)="editarTab('serv')" [ngClass]="tipo.serv === 'edit' ? '' : 'red-header'">
+<ion-content>  
+  <mat-vertical-stepper [linear]="isLinear" #stepper>
+    <mat-step>  
+      <ng-template matStepLabel>SELECCIONE SU SERVICIO</ng-template>
+      <ion-grid>       
+        <ion-row>
+          <ion-col>
+            <ion-item lines="none">
+              <ion-select placeholder="Elige una opción" [(ngModel)]="servicio" (ionChange)="endServ(Section2)">
+                <ion-select-option value="c">Pago de Cuotas</ion-select-option>
+                <ion-select-option value="h">Certificado de Habilidad</ion-select-option>
+              </ion-select>
+            </ion-item>      
+          </ion-col>      
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button (click)="goForward(stepper)" [disabled]="!servicio" shape="round" expand="full" size="small">Siguiente</ion-button>
+          </ion-col>          
+        </ion-row>
+      </ion-grid>      
+    </mat-step>
+    <mat-step>      
+      <ng-template matStepLabel>COMPLETE LOS DATOS</ng-template>
+      <ion-grid class="ion-no-padding">
+        <ion-row *ngIf="servicio=='c'">
+          <ion-col>
+            <ion-label>Desde</ion-label>
+            <ion-datetime displayFormat="DD MM YYYY" [(ngModel)]="FecIni"  disabled="true"></ion-datetime>
+          </ion-col>      
+        </ion-row>
+        <ion-row *ngIf="servicio=='c'">
+          <ion-col>
+            <ion-label>Hasta</ion-label>
+            <ion-datetime displayFormat="DD MM YYYY" [(ngModel)]="FecFin" (ionChange)="endDatos()" [disabled]="tipo.datos=='complete'" max="2080"></ion-datetime>
+          </ion-col>      
+        </ion-row>
+        <ion-row *ngIf="servicio=='h'">
+          <ion-col size="6">
+            <ion-label>Fec. Incorporación</ion-label>
+            <ion-datetime displayFormat="DD MM YYYY"    value="2016-12-05T13:47:20.789" disabled="true"></ion-datetime>
+          </ion-col>      
+          <ion-col size="6" class="ion-text-end">
+            <ion-label>Fec. Vencimiento</ion-label>
+            <ion-datetime displayFormat="DD MM YYYY"  value="2021-04-09T13:47:20.789" disabled="true"></ion-datetime>
+          </ion-col>  
+        </ion-row>    
+        <ion-row *ngIf="servicio=='h'">
+          <ion-col>
+            <ion-label>Asunto</ion-label>
+            <ion-textarea placeholder="Ingresa el asunto aqui..."></ion-textarea>
+          </ion-col>      
+        </ion-row>
+        <ion-row *ngIf="servicio=='h'">
+          <ion-col>
+            <ion-label>Entidad</ion-label>
+            <ion-textarea placeholder="Ingresa la entidad aqui..."></ion-textarea>
+          </ion-col>      
+        </ion-row>
+        <ion-row *ngIf="servicio=='h'">
+          <ion-col>
+            <ion-label>Dirección</ion-label>
+            <ion-textarea placeholder="Ingresa la dirección aqui..."></ion-textarea>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="servicio=='h'">
+          <ion-col>
+            <ion-label>Correo</ion-label>
+            <ion-input placeholder="Ingresa el correo aqui..."></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button (click)="goForward(stepper)" shape="round" expand="full" size="small">Siguiente</ion-button>
+          </ion-col>          
+        </ion-row>
+      </ion-grid>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>COMPROBANTE DE PAGO </ng-template>  
+      <ion-segment [(ngModel)]="comprobante">
+        <ion-segment-button value="f">
+          <ion-label>Factura</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="b">
+          <ion-label>Boleta</ion-label>
+        </ion-segment-button>
+      </ion-segment>  
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-label>{{comprobante == 'b' ?  'DNI': 'Nro Ruc'}}</ion-label>
+            <ion-textarea placeholder="{{comprobante == 'b' ?  'Ingresa el DNI aqui...': 'Ingresa el Nro Ruc aqui...'}}"></ion-textarea>
+          </ion-col>      
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-label>Razón Social / Nombre</ion-label>
+            <ion-textarea disabled="true" placeholder=""></ion-textarea>
+          </ion-col>      
+        </ion-row>        
+        <ion-row>
+          <ion-col>
+            <ion-button (click)="next()" shape="round" expand="full" size="small">PAGAR</ion-button>
+          </ion-col>          
+        </ion-row>
+      </ion-grid>  
+    </mat-step>
+  </mat-vertical-stepper>
+  <!-- <ion-grid (click)="editarTab('serv')" [ngClass]="tipo.serv === 'edit' ? '' : 'red-header'" #Section1>
     <ion-row>
       <ion-col>
         <ion-label><strong>SELECCIONE SU SERVICIO (1 DE 3)</strong></ion-label>
@@ -25,7 +124,7 @@
       <ion-col>
         <ion-item lines="none" [ngClass]="tipo.serv === 'edit' ? '' : 'red-ion-iten'" [disabled]="tipo.serv=='complete'">
           <ion-label>Servicio</ion-label>
-          <ion-select placeholder="Opciones" [(ngModel)]="servicio" (ionChange)="endServ()">
+          <ion-select placeholder="Opciones" [(ngModel)]="servicio" (ionChange)="endServ(Section2)">
             <ion-select-option value="c">Pago de Cuotas</ion-select-option>
             <ion-select-option value="h">Certificado de Habilidad</ion-select-option>
           </ion-select>
@@ -33,7 +132,7 @@
       </ion-col>      
     </ion-row>
   </ion-grid>
-  <ion-grid (click)="editarTab('datos')" [ngClass]="{'disabled': tipo.datos === 'disabled', '': tipo.datos === 'edit', 'red-header-sec': tipo.datos === 'complete'}">
+  <ion-grid #Section2 (click)="editarTab('datos')" [ngClass]="{'disabled': tipo.datos === 'disabled', '': tipo.datos === 'edit', 'red-header-sec': tipo.datos === 'complete'}">
     <ion-row>
       <ion-col>
         <ion-label><strong>COMPLETE LOS DATOS (2 DE 3)</strong></ion-label>
@@ -82,7 +181,7 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-grid [ngClass]="{'disabled': tipo.pagar === 'disabled', '': tipo.pagar === 'edit'}">
+  <ion-grid #Section3 [ngClass]="{'disabled': tipo.pagar === 'disabled', '': tipo.pagar === 'edit'}">
     <ion-row>
       <ion-col>
         <ion-label><strong>IMPORTE A PAGAR (3 DE 3)</strong></ion-label>
@@ -119,22 +218,35 @@
         <ion-button expand="block" (click)="next()">continuar</ion-button>
       </ion-col>
     </ion-row>
-  </ion-grid>
-  <!-- 
-    <ion-item>
-      <ion-label>Asunto</ion-label>
-      <ion-textarea placeholder="Ingresa el asunto aqui..."></ion-textarea>
-    </ion-item>
-    <ion-item>
-      <ion-label>Entidad</ion-label>
-      <ion-textarea placeholder="Ingresa la entidad aqui..."></ion-textarea>
-    </ion-item>
-    <ion-item>
-      <ion-label>Dirección</ion-label>
-      <ion-textarea placeholder="Ingresa la dirección aqui..."></ion-textarea>
-    </ion-item>
-    <ion-item>
-      <ion-button shape="round" fill="outline" slot="end">Siguiente</ion-button>
-    </ion-item>
-  </ion-item-group> -->
+  </ion-grid>  -->
 </ion-content>
+<ion-footer *ngIf="servicio">
+  <ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-text color="medium">Importe</ion-text>
+        </ion-col>
+        <ion-col class="ion-text-end">
+          <ion-text color="medium">S/ 90.00</ion-text>                 
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-text color="medium">Comisión bancaria</ion-text>
+        </ion-col>
+        <ion-col class="ion-text-end">
+          <ion-text color="medium">S/ 2.30</ion-text>                  
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <strong>Total</strong>
+        </ion-col>
+        <ion-col class="ion-text-end">
+          <strong>S/ 92.30</strong>              
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>
